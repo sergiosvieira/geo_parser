@@ -5,6 +5,7 @@
 #include <cassert>
 #include <vector>
 #include <algorithm>
+#include <memory>
 #include <sstream>
 #include <stack>
 #include <set>
@@ -32,7 +33,7 @@ struct ParserToken
 	ParserType type;
 	std::string label;
 	bool isDouble = false;
-	std::vector<ParserToken> childs;
+	std::vector<std::unique_ptr<ParserToken>> childs;
 };
 
 ParserToken* createToken(ParserType a_type, const std::string& a_label)
@@ -164,7 +165,7 @@ void popAndPushToken(std::stack<ParserToken*>& a_stack)
 	a_stack.pop();
 	ParserToken* parent = a_stack.top();
 	child->parent = parent;
-	parent->childs.push_back(*child);
+	parent->childs.push_back(std::unique_ptr<ParserToken>(child));
 }
 
 ParserError geo_parser(const std::string a_input, ParserToken& a_root)
@@ -245,7 +246,7 @@ ParserError geo_parser(const std::string a_input, ParserToken& a_root)
 			break;
 		}
 	}
-	return result;
+    return result;
 }
 
 ParserToken* find(ParserToken* a_node, const std::string& a_key)
@@ -256,17 +257,17 @@ ParserToken* find(ParserToken* a_node, const std::string& a_key)
     }
     else
     {
-        for (ParserToken& token : a_node->childs)
+        for (auto it = a_node->childs.begin(); it != a_node->childs.end(); ++it)
         {
-			if (token.type == PT_ARRAY)
+			if ((*it)->type == PT_ARRAY)
 			{
-				if (token.label == a_key)
+				if ((*it)->label == a_key)
 				{
-					return &token;
+					return (*it).get();
 				}
 				else
 				{
-					ParserToken* ptrToken = find(&token, a_key);
+					ParserToken* ptrToken = find((*it).get(), a_key);
 					if (ptrToken != nullptr)
 					{
 						return ptrToken;

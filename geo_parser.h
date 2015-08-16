@@ -10,30 +10,30 @@
 #include <set>
 #include <string>
 
-typedef enum
+enum ParserError
 {
 	PE_NONE,
 	PE_INVALID_VALUE,
 	PE_UNCLOSED_QUOTES,
 	PE_UNCLOSED_BRACKETS,
 	PE_SYNTAX_ERROR
-} ParserError;
+};
 
-typedef enum
+enum ParserType
 {
 	PT_ARRAY,
 	PT_STRING,
 	PT_PRIMITIVE
-} ParserType;
+};
 
-typedef struct ParserToken
+struct ParserToken
 {
 	ParserToken* parent = nullptr;
 	ParserType type;
 	std::string label;
 	bool isDouble = false;
 	std::vector<ParserToken> childs;
-} ParserToken;
+};
 
 ParserToken* createToken(ParserType a_type, const std::string& a_label)
 {

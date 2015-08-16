@@ -58,7 +58,7 @@ void updateToken(ParserToken& a_token, ParserType a_type, const std::string& a_l
 
 bool skip(const char& a_char)
 {
-	static const std::vector<char> skipChars = 
+	static const std::vector<char> skipChars =
 	{
 		' ',
 		'\t',
@@ -68,7 +68,7 @@ bool skip(const char& a_char)
 	return (std::find(skipChars.begin(), skipChars.end(), a_char) != skipChars.end());
 }
 
-ParserError processAlpha(std::string& a_alpha, 
+ParserError processAlpha(std::string& a_alpha,
 						 std::string::const_iterator& a_it,
 						 const std::string::const_iterator& a_end)
 {
@@ -129,7 +129,7 @@ ParserError processDigit(std::string& a_digit,
 	return result;
 }
 
-ParserError processString(std::string& a_string, 
+ParserError processString(std::string& a_string,
 						  std::string::const_iterator& a_it,
 						  const std::string::const_iterator& a_end)
 {
@@ -174,7 +174,7 @@ ParserError geo_parser(const std::string a_input, ParserToken& a_root)
 	for (std::string::const_iterator it = a_input.begin();
 		 it != a_input.end();
 		 ++it)
-	{		
+	{
 		char c = *it;
 		if (isalpha(c))
 		{
@@ -193,7 +193,7 @@ ParserError geo_parser(const std::string a_input, ParserToken& a_root)
 					stack_.push(token);
 				}
 			}
-		} 
+		}
 		else if (isdigit(c) || c == '+' || c == '-')
 		{
 			std::string digit = "";
@@ -207,7 +207,7 @@ ParserError geo_parser(const std::string a_input, ParserToken& a_root)
 			{
 				break;
 			}
-		} 
+		}
 		else if (c == '\"')
 		{
 			++it;
@@ -222,15 +222,15 @@ ParserError geo_parser(const std::string a_input, ParserToken& a_root)
 			{
 				break;
 			}
-		} 
+		}
 		else if (c == ',')
 		{
 			popAndPushToken(stack_);
-		} 
+		}
 		else if (c == ']')
 		{
 			popAndPushToken(stack_);
-		} 
+		}
 		else if (skip(c) == true)
 		{
 			continue;
